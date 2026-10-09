@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enquiry received | Qusaraengg</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/img/logo.png" type="image/png">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a class="logo" href="/">
+        <img class="logo-img" src="/img/logo.png" alt="Quasar Robotics & Automation Academy — Learn. Build. Automate">
+      </a>
+      <a class="btn btn-primary" href="/">Back to home</a>
+    </div>
+  </header>
+  <main class="section">
+    <div class="container" style="max-width:640px">
+      <div class="card pillar">
+        <span class="tag">Thank you</span>
+        <h1>We have your enquiry.</h1>
+        <p style="margin:12px 0 18px">WhatsApp should have opened with your message for the owners. If it did not, use the button below. Our team will contact you shortly.</p>
+        <a class="btn btn-green" id="wa-again" href="https://wa.me/919000000000">Send on WhatsApp</a>
+        <a class="btn btn-ghost" href="/">Home</a>
+      </div>
+    </div>
+  </main>
+  <script src="/js/main.js"></script>
+  <script>
+    const saved = sessionStorage.getItem("qusara_lead");
+    const btn = document.getElementById("wa-again");
+    if (saved && btn && typeof CONFIG !== "undefined") {
+      const data = JSON.parse(saved);
+      const text = [
+        "New website enquiry - Qusaraengg",
+        "Name: " + data.name,
+        "Phone: " + data.phone,
+        "Email: " + (data.email || "-"),
+        "Interest: " + data.interest,
+        "Message: " + (data.message || "-")
+      ].join("\n");
+      btn.href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(text);
+    }
+  </script>
+</body>
+</html>

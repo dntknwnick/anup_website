@@ -1,0 +1,12 @@
+DirectoryIndex index.html
+
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^services\.html$ /services/ [R=301,L]
+RewriteRule ^training\.html$ /training/ [R=301,L]
+RewriteRule ^about\.html$ /about/ [R=301,L]
+RewriteRule ^contact\.html$ /contact/ [R=301,L]
+RewriteRule ^privacy\.html$ /privacy/ [R=301,L]
+RewriteRule ^thank-you\.html$ /thank-you/ [R=301,L]
+RewriteRule ^index\.html$ / [R=301,L]
