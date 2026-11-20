@@ -1,15 +1,22 @@
 const CONFIG = {
-  company: "Quasar Robotics & Automation Academy",
-  phone: "+91 90000 00000",
-  phoneHref: "tel:+919000000000",
-  whatsapp: "919000000000",
+  company: "Quasar Robotics Academy",
+  phone: "+91 80951 56211",
+  phoneHref: "tel:+918095156211",
+  secondaryPhone: "+91 96867 75483",
+  secondaryPhoneHref: "tel:+919686775483",
+  whatsapp: "918095156211",
   email: "hello@qusaraengg.com",
-  address: "Bengaluru, Karnataka, India",
+  address: "1st Floor, 4, 17th Cross Road, behind Maruthi Mandir, Govindaraja Nagar Ward, MC Layout, Vijayanagar, Bengaluru, Karnataka 560040",
 };
 
 document.querySelectorAll("[data-phone]").forEach((el) => {
   el.textContent = CONFIG.phone;
   if (el.tagName === "A") el.href = CONFIG.phoneHref;
+});
+
+document.querySelectorAll("[data-phone-secondary]").forEach((el) => {
+  el.textContent = CONFIG.secondaryPhone;
+  if (el.tagName === "A") el.href = CONFIG.secondaryPhoneHref;
 });
 
 document.querySelectorAll("[data-email]").forEach((el) => {
@@ -22,7 +29,7 @@ document.querySelectorAll("[data-address]").forEach((el) => {
 });
 
 document.querySelectorAll("[data-wa]").forEach((el) => {
-  const preset = el.getAttribute("data-wa-text") || "Hi Quasar, I would like to know more about the PLC training.";
+  const preset = el.getAttribute("data-wa-text") || "Hi Quasar Robotics Academy, I would like to know more about your automation services or training.";
   el.href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(preset)}`;
 });
 
@@ -38,12 +45,135 @@ if (toggle) {
 }
 
 document.querySelectorAll(".nav a").forEach((link) => {
-  link.addEventListener("click", () => document.body.classList.remove("nav-open"));
+  link.addEventListener("click", () => {
+    document.body.classList.remove("nav-open");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+  });
 });
+
+document.querySelectorAll("[data-carousel]").forEach((carousel) => {
+  const slides = Array.from(carousel.querySelectorAll("[data-slide]"));
+  const dots = Array.from(carousel.querySelectorAll("[data-slide-to]"));
+  const pauseButton = carousel.querySelector("[data-carousel-toggle]");
+  const progress = carousel.querySelector(".carousel-progress");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (slides.length < 2) return;
+
+  let activeIndex = 0;
+  let manuallyPaused = reducedMotion;
+  let temporarilyPaused = false;
+  let timer;
+
+  function showSlide(index) {
+    activeIndex = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      const active = slideIndex === activeIndex;
+      slide.classList.toggle("is-active", active);
+      slide.setAttribute("aria-hidden", String(!active));
+    });
+    dots.forEach((dot, dotIndex) => {
+      const active = dotIndex === activeIndex;
+      dot.classList.toggle("is-active", active);
+      if (active) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+    if (progress) {
+      progress.classList.remove("is-running");
+      void progress.offsetWidth;
+      if (!manuallyPaused && !temporarilyPaused) progress.classList.add("is-running");
+    }
+  }
+
+  function stopTimer() {
+    window.clearInterval(timer);
+    timer = undefined;
+    if (progress) progress.classList.remove("is-running");
+  }
+
+  function startTimer() {
+    stopTimer();
+    if (manuallyPaused || temporarilyPaused || document.hidden) return;
+    if (progress) {
+      void progress.offsetWidth;
+      progress.classList.add("is-running");
+    }
+    timer = window.setInterval(() => showSlide(activeIndex + 1), 2000);
+  }
+
+  function syncPlayback() {
+    if (pauseButton) {
+      pauseButton.textContent = manuallyPaused ? "Play" : "Pause";
+      pauseButton.setAttribute("aria-label", manuallyPaused ? "Play carousel" : "Pause carousel");
+    }
+    if (manuallyPaused || temporarilyPaused || document.hidden) stopTimer();
+    else startTimer();
+  }
+
+  carousel.querySelector("[data-carousel-prev]")?.addEventListener("click", () => {
+    showSlide(activeIndex - 1);
+    syncPlayback();
+  });
+  carousel.querySelector("[data-carousel-next]")?.addEventListener("click", () => {
+    showSlide(activeIndex + 1);
+    syncPlayback();
+  });
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      showSlide(Number(dot.dataset.slideTo));
+      syncPlayback();
+    });
+  });
+  if (pauseButton) {
+    pauseButton.addEventListener("click", () => {
+      manuallyPaused = !manuallyPaused;
+      if (!manuallyPaused) temporarilyPaused = false;
+      syncPlayback();
+    });
+  }
+
+  carousel.addEventListener("pointerenter", () => {
+    temporarilyPaused = true;
+    syncPlayback();
+  });
+  carousel.addEventListener("pointerleave", () => {
+    temporarilyPaused = carousel.contains(document.activeElement);
+    syncPlayback();
+  });
+  carousel.addEventListener("focusin", () => {
+    temporarilyPaused = true;
+    syncPlayback();
+  });
+  carousel.addEventListener("focusout", (event) => {
+    if (!carousel.contains(event.relatedTarget) && !carousel.matches(":hover")) {
+      temporarilyPaused = false;
+      syncPlayback();
+    }
+  });
+  document.addEventListener("visibilitychange", syncPlayback);
+
+  showSlide(0);
+  syncPlayback();
+});
+
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll(".section-head, .service-card, .stage-card, .module-row, .project-visual").forEach((element) => {
+    element.classList.add("will-reveal");
+    revealObserver.observe(element);
+  });
+}
 
 function leadMessage(data) {
   return [
-    "New website enquiry - Quasar Robotics & Automation Academy",
+    "New website enquiry - Quasar Robotics Academy",
     `Name: ${data.name}`,
     `Phone: ${data.phone}`,
     `Email: ${data.email || "-"}`,

@@ -25,7 +25,7 @@ if ($name === '' || $phone === '') {
 }
 
 $to = 'hello@qusaraengg.com'; /* UPDATE after client review */
-$subject = 'New Qusaraengg website enquiry';
+$subject = 'New Quasar Robotics Academy website enquiry';
 $body = "Name: {$name}\nPhone: {$phone}\nEmail: {$email}\nInterest: {$interest}\nMessage:\n{$message}\n";
 $from = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : $to;
 $headers = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $from . "\r\n";
