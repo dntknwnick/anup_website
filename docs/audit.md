@@ -31,8 +31,8 @@
 | `sitemap.xml` | Rewrite | Remove the retired Services URL; keep the current canonical host pending confirmation. |
 | `robots.txt` | Keep | Existing sitemap pointer remains on the current canonical host pending confirmation. |
 | `favicon.svg`, `img/logo.png`, `img/whatsapp.svg` | Keep | Existing assets; not used as the new visible academy logo. |
-| `img/quasar-logo.png`, `img/quasar-icon.png` | Add | Cropped from the owner-provided logo image; used for the site logo and favicon, respectively. |
-| `img/quasar-mark.svg`, `img/robot-cell.svg`, `img/plc-controls.svg`, `img/machine-vision.svg` | Keep | Existing academy mark and technical illustrations; the new provided logo is used in page headers and footers. |
+| `img/quasar-logo.png`, `img/quasar-icon.png` | Add | Cropped from the owner-provided logo image; the full logo is used in footers and the icon beside the full academy name in headers and as the favicon. |
+| `img/quasar-mark.svg`, `img/robot-cell.svg`, `img/plc-controls.svg`, `img/machine-vision.svg` | Keep | Existing academy mark and technical illustrations. |
 
 ## Banned-term and legacy-content decisions
 
