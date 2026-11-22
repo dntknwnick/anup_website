@@ -1,57 +1,16 @@
-const CONFIG = {
-  company: "Quasar Robotics Academy",
-  phone: "+91 80951 56211",
-  phoneHref: "tel:+918095156211",
-  secondaryPhone: "+91 96867 75483",
-  secondaryPhoneHref: "tel:+919686775483",
-  whatsapp: "918095156211",
-  email: "hello@qusaraengg.com",
-  address: "1st Floor, 4, 17th Cross Road, behind Maruthi Mandir, Govindaraja Nagar Ward, MC Layout, Vijayanagar, Bengaluru, Karnataka 560040",
-};
-
-document.querySelectorAll("[data-phone]").forEach((el) => {
-  el.textContent = CONFIG.phone;
-  if (el.tagName === "A") el.href = CONFIG.phoneHref;
-});
-
-document.querySelectorAll("[data-phone-secondary]").forEach((el) => {
-  el.textContent = CONFIG.secondaryPhone;
-  if (el.tagName === "A") el.href = CONFIG.secondaryPhoneHref;
-});
-
-document.querySelectorAll("[data-email]").forEach((el) => {
-  el.textContent = CONFIG.email;
-  if (el.tagName === "A") el.href = `mailto:${CONFIG.email}`;
-});
-
-document.querySelectorAll("[data-address]").forEach((el) => {
-  el.textContent = CONFIG.address;
-});
-
-document.querySelectorAll("[data-wa]").forEach((el) => {
-  const preset = el.getAttribute("data-wa-text") || "Hi Quasar Robotics Academy, I would like to know more about your automation services or training.";
-  el.href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(preset)}`;
-});
-
-const year = document.getElementById("year");
-if (year) year.textContent = new Date().getFullYear();
-
-const toggle = document.querySelector(".nav-toggle");
-if (toggle) {
-  toggle.addEventListener("click", () => {
-    document.body.classList.toggle("nav-open");
-    toggle.setAttribute("aria-expanded", document.body.classList.contains("nav-open"));
-  });
+function leadMessage(data, config) {
+  return [
+    `New academy enquiry - ${config.brandName}`,
+    `Name: ${data.name}`,
+    `Phone: ${data.phone}`,
+    `Email: ${data.email || "-"}`,
+    `I am a: ${data.learnerType}`,
+    `Interested in: ${data.interest}`,
+    `Message: ${data.message || "-"}`,
+  ].join("\n");
 }
 
-document.querySelectorAll(".nav a").forEach((link) => {
-  link.addEventListener("click", () => {
-    document.body.classList.remove("nav-open");
-    if (toggle) toggle.setAttribute("aria-expanded", "false");
-  });
-});
-
-document.querySelectorAll("[data-carousel]").forEach((carousel) => {
+function initCarousel(carousel) {
   const slides = Array.from(carousel.querySelectorAll("[data-slide]"));
   const dots = Array.from(carousel.querySelectorAll("[data-slide-to]"));
   const pauseButton = carousel.querySelector("[data-carousel-toggle]");
@@ -123,14 +82,11 @@ document.querySelectorAll("[data-carousel]").forEach((carousel) => {
       syncPlayback();
     });
   });
-  if (pauseButton) {
-    pauseButton.addEventListener("click", () => {
-      manuallyPaused = !manuallyPaused;
-      if (!manuallyPaused) temporarilyPaused = false;
-      syncPlayback();
-    });
-  }
-
+  pauseButton?.addEventListener("click", () => {
+    manuallyPaused = !manuallyPaused;
+    if (!manuallyPaused) temporarilyPaused = false;
+    syncPlayback();
+  });
   carousel.addEventListener("pointerenter", () => {
     temporarilyPaused = true;
     syncPlayback();
@@ -150,77 +106,249 @@ document.querySelectorAll("[data-carousel]").forEach((carousel) => {
     }
   });
   document.addEventListener("visibilitychange", syncPlayback);
-
   showSlide(0);
   syncPlayback();
-});
+}
 
-if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
+function initSite(config) {
+  window.SITE_CONFIG = config;
+
+  const titlePrefix = document.querySelector("title[data-title-prefix]")?.dataset.titlePrefix;
+  if (titlePrefix) document.title = `${titlePrefix} | ${config.brandName}`;
+  document.querySelectorAll("[data-og-prefix]").forEach((meta) => {
+    meta.content = `${meta.dataset.ogPrefix} | ${config.brandName}`;
+  });
+  const canonicalLink = document.querySelector("link[rel=canonical][data-canonical-path]");
+  if (canonicalLink) {
+    const url = `${config.canonicalBase}${canonicalLink.dataset.canonicalPath}`;
+    canonicalLink.href = url;
+    const openGraphUrl = document.querySelector('meta[property="og:url"]');
+    if (openGraphUrl) openGraphUrl.content = url;
+  }
+
+  document.querySelectorAll("[data-brand]").forEach((element) => {
+    element.textContent = element.classList.contains("short-brand") ? config.shortName : config.brandName;
+  });
+  document.querySelectorAll("[data-phone]").forEach((element) => {
+    element.textContent = config.phone;
+    if (element.tagName === "A") element.href = config.phoneHref;
+  });
+  document.querySelectorAll("[data-phone-secondary]").forEach((element) => {
+    element.textContent = config.secondaryPhone;
+    if (element.tagName === "A") element.href = config.secondaryPhoneHref;
+  });
+  document.querySelectorAll("[data-phone-link]").forEach((element) => {
+    element.href = config.phoneHref;
+  });
+  document.querySelectorAll("[data-email]").forEach((element) => {
+    element.textContent = config.email;
+    if (element.tagName === "A") element.href = `mailto:${config.email}`;
+  });
+  document.querySelectorAll("[data-address]").forEach((element) => {
+    element.textContent = config.address;
+  });
+  document.querySelectorAll("[data-site-link]").forEach((element) => {
+    element.textContent = config.website.replace(/^https?:\/\//, "");
+    element.href = config.website;
+  });
+  document.querySelectorAll("[data-maps]").forEach((element) => {
+    element.href = config.mapsUrl;
+  });
+  document.querySelectorAll("[data-wa]").forEach((element) => {
+    const preset = element.getAttribute("data-wa-text") || `Hi ${config.shortName}, I would like to know more about the programme.`;
+    element.href = `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(preset)}`;
+  });
+
+  const year = document.getElementById("year");
+  if (year) year.textContent = new Date().getFullYear();
+
+  const toggle = document.querySelector(".nav-toggle");
+  toggle?.addEventListener("click", () => {
+    document.body.classList.toggle("nav-open");
+    toggle.setAttribute("aria-expanded", String(document.body.classList.contains("nav-open")));
+  });
+  document.querySelectorAll(".nav a").forEach((link) => {
+    link.addEventListener("click", () => {
+      document.body.classList.remove("nav-open");
+      toggle?.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  document.querySelectorAll("[data-copy-phone]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const phone = button.parentElement.querySelector("[data-phone], [data-phone-secondary]");
+      if (!phone) return;
+      try {
+        await navigator.clipboard.writeText(phone.textContent.trim());
+        button.textContent = "Copied";
+      } catch (error) {
+        button.textContent = "Copy failed";
+        console.error("Could not copy the phone number.", error);
       }
     });
-  }, { threshold: 0.12 });
-
-  document.querySelectorAll(".section-head, .service-card, .stage-card, .module-row, .project-visual").forEach((element) => {
-    element.classList.add("will-reveal");
-    revealObserver.observe(element);
   });
-}
 
-function leadMessage(data) {
-  return [
-    "New website enquiry - Quasar Robotics Academy",
-    `Name: ${data.name}`,
-    `Phone: ${data.phone}`,
-    `Email: ${data.email || "-"}`,
-    `Interest: ${data.interest}`,
-    `Message: ${data.message || "-"}`,
-  ].join("\n");
-}
+  document.querySelectorAll("[data-carousel]").forEach(initCarousel);
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".section-head, .stage-card, .module-row, .project-visual").forEach((element) => {
+      element.classList.add("will-reveal");
+      revealObserver.observe(element);
+    });
+  }
 
-async function handleEnquiry(form) {
-  const alertBox = form.querySelector(".alert");
-  const honeypot = form.querySelector('[name="company_website"]');
-  if (honeypot && honeypot.value) return;
-
-  const data = {
-    name: form.name.value.trim(),
-    phone: form.phone.value.trim(),
-    email: form.email ? form.email.value.trim() : "",
-    interest: form.interest.value,
-    message: form.message ? form.message.value.trim() : "",
+  const organizationSchema = {
+    "@type": "EducationalOrganization",
+    name: config.brandName,
+    url: `${config.canonicalBase}/`,
+    email: config.email,
+    telephone: [config.phone, config.secondaryPhone],
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: config.address,
+      addressLocality: "Bengaluru",
+      addressRegion: "Karnataka",
+      postalCode: "560040",
+      addressCountry: "IN",
+    },
   };
+  const schemas = [organizationSchema];
+  if (document.body.dataset.schema === "course") {
+    schemas.push({
+      "@type": "Course",
+      name: "Industrial Automation & Robotics",
+      url: `${config.canonicalBase}/training/`,
+      description: "A 3-month hands-on industrial automation programme covering PLC and HMI, electrical and automation, industrial robotics, AI and machine vision, and an integrated capstone.",
+      timeRequired: "P3M",
+      provider: { "@type": "EducationalOrganization", name: config.brandName, url: `${config.canonicalBase}/` },
+    });
+  }
+  const schemaScript = document.createElement("script");
+  schemaScript.type = "application/ld+json";
+  schemaScript.textContent = JSON.stringify(schemas.length === 1
+    ? { "@context": "https://schema.org", ...organizationSchema }
+    : { "@context": "https://schema.org", "@graph": schemas });
+  document.head.append(schemaScript);
 
-  if (!data.name || !data.phone) {
-    if (alertBox) {
-      alertBox.className = "alert alert-err show";
-      alertBox.textContent = "Please enter your name and phone number.";
+  document.querySelectorAll("form.enquiry-form").forEach((form) => {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const alertBox = form.querySelector(".alert");
+      const honeypot = form.elements.namedItem("company_website");
+      if (honeypot && honeypot.value) return;
+
+      const data = {
+        name: form.elements.namedItem("name").value.trim(),
+        phone: form.elements.namedItem("phone").value.trim(),
+        email: form.elements.namedItem("email").value.trim(),
+        learnerType: form.elements.namedItem("learner_type").value,
+        interest: form.elements.namedItem("interest").value,
+        message: form.elements.namedItem("message").value.trim(),
+      };
+      const normalizedPhone = data.phone.replace(/[\s-]/g, "").replace(/^\+?91/, "");
+      const emailInput = form.elements.namedItem("email");
+      if (!data.name || !/^[6-9]\d{9}$/.test(normalizedPhone) || !emailInput.validity.valid) {
+        if (alertBox) {
+          alertBox.className = "alert alert-err show";
+          alertBox.textContent = !data.name
+            ? "Enter your name."
+            : !/^[6-9]\d{9}$/.test(normalizedPhone)
+              ? "Enter a valid Indian mobile number."
+              : "Enter a valid email address or leave the email field blank.";
+        }
+        return;
+      }
+
+      const whatsappUrl = `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(leadMessage(data, config))}`;
+      sessionStorage.setItem("academy_lead", JSON.stringify(data));
+      sessionStorage.removeItem("academy_whatsapp_popup_blocked");
+      const whatsappWindow = window.open(whatsappUrl, "_blank");
+      if (!whatsappWindow) sessionStorage.setItem("academy_whatsapp_popup_blocked", "true");
+      try {
+        const response = await fetch("/send.php", { method: "POST", body: new FormData(form) });
+        if (!response.ok) {
+          const result = await response.json().catch(() => ({}));
+          throw new Error(result.error || `Email submission failed: ${response.status}`);
+        }
+      } catch (error) {
+        if (alertBox) {
+          alertBox.className = "alert alert-err show";
+          alertBox.textContent = "We could not submit your enquiry. Please try WhatsApp or call admissions.";
+        }
+        console.error("Academy enquiry submission failed.", error);
+        return;
+      }
+
+      window.location.href = "/thank-you/";
+    });
+  });
+
+  document.querySelectorAll("[data-copy-enquiry]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const form = button.closest("form");
+      const alertBox = form?.querySelector(".alert");
+      if (!form) return;
+      const data = {
+        name: form.elements.namedItem("name").value.trim(),
+        phone: form.elements.namedItem("phone").value.trim(),
+        email: form.elements.namedItem("email").value.trim(),
+        learnerType: form.elements.namedItem("learner_type").value,
+        interest: form.elements.namedItem("interest").value,
+        message: form.elements.namedItem("message").value.trim(),
+      };
+      try {
+        await navigator.clipboard.writeText(leadMessage(data, config));
+        if (alertBox) {
+          alertBox.className = "alert alert-ok show";
+          alertBox.textContent = "Enquiry copied. Paste it into your message.";
+        }
+      } catch (error) {
+        if (alertBox) {
+          alertBox.className = "alert alert-err show";
+          alertBox.textContent = "Could not copy your enquiry. Please select and copy the details manually.";
+        }
+        console.error("Could not copy the academy enquiry.", error);
+      }
+    });
+  });
+
+  const resendButton = document.getElementById("wa-again");
+  const savedEnquiry = sessionStorage.getItem("academy_lead");
+  const whatsappStatus = document.getElementById("whatsapp-status");
+  if (whatsappStatus && sessionStorage.getItem("academy_whatsapp_popup_blocked") === "true") {
+    whatsappStatus.textContent = "Your browser blocked WhatsApp from opening automatically. Use the button below to send your enquiry.";
+    sessionStorage.removeItem("academy_whatsapp_popup_blocked");
+  }
+  if (resendButton && savedEnquiry) {
+    try {
+      resendButton.href = `https://wa.me/${config.whatsapp}?text=${encodeURIComponent(leadMessage(JSON.parse(savedEnquiry), config))}`;
+    } catch (error) {
+      console.error("Could not prepare the saved enquiry for WhatsApp.", error);
     }
-    return;
   }
-
-  const body = new FormData(form);
-  let emailed = false;
-  try {
-    const res = await fetch("/send.php", { method: "POST", body });
-    emailed = res.ok;
-  } catch (err) {
-    emailed = false;
-  }
-
-  const waUrl = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(leadMessage(data))}`;
-  sessionStorage.setItem("qusara_lead", JSON.stringify({ ...data, emailed }));
-  window.open(waUrl, "_blank");
-  window.location.href = "/thank-you/";
 }
 
-document.querySelectorAll("form.enquiry-form").forEach((form) => {
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    handleEnquiry(form);
+fetch("/site-config.json")
+  .then((response) => {
+    if (!response.ok) throw new Error(`Site configuration request failed: ${response.status}`);
+    return response.json();
+  })
+  .then(initSite)
+  .catch((error) => {
+    console.error("Could not initialize the academy website.", error);
+    const configAlert = document.createElement("p");
+    configAlert.className = "config-error";
+    configAlert.setAttribute("role", "alert");
+    configAlert.textContent = "Contact details are temporarily unavailable. Please try again later.";
+    document.body.prepend(configAlert);
+    document.querySelectorAll("[data-config-error]").forEach((element) => {
+      element.textContent = "Contact details are temporarily unavailable. Please try again later.";
+    });
   });
-});
