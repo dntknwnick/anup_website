@@ -835,10 +835,11 @@ body {
 .logo-img {
   height: 48px;
   width: auto;
-  aspect-ratio: 1;
-  padding: 3px;
-  border-radius: 12px;
+  aspect-ratio: auto;
+  padding: 0;
+  border-radius: 8px;
   background: #fff;
+  object-fit: contain;
 }
 
 .brand-name {
