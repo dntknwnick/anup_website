@@ -3,48 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Enquiry received | Quasar Robotics Academy</title>
+  <title data-title-prefix="Enquiry received | Admissions">Enquiry received | Admissions</title>
   <meta name="robots" content="noindex">
   <link rel="icon" href="/img/quasar-mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-  <header class="header">
-    <div class="header-inner">
-      <a class="logo" href="/">
-        <img class="logo-img" src="/img/quasar-mark.svg" alt="Quasar Robotics Academy">
-        <span class="brand-name">Quasar Robotics Academy<small>Industrial skills, built hands-on</small></span>
-      </a>
-      <a class="btn btn-primary" href="/">Back to home</a>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="header"><div class="header-inner">
+    <a class="logo" href="/"><img class="logo-img" src="/img/quasar-mark.svg" alt="" aria-hidden="true"><span class="brand-name"><span data-brand></span><small>Industrial skills, built hands-on</small></span></a>
+    <a class="btn btn-primary" href="/">Back to home</a>
+  </div></header>
+  <main class="section" id="main"><div class="container" style="max-width:680px">
+    <div class="card pillar thank-you-card">
+      <span class="tag">Thank you</span>
+      <h1>We have your enquiry.</h1>
+      <p>Our admissions team will call back to discuss the programme and arrange a visit to the lab.</p>
+      <p id="whatsapp-status">If WhatsApp opened, press send there to share your enquiry directly.</p>
+      <div class="hero-actions"><a class="btn btn-green" id="wa-again" data-wa data-wa-text="Hello, I would like to talk about the academy programme.">Continue on WhatsApp</a><a class="btn btn-ghost" href="/">Home</a></div>
     </div>
-  </header>
-  <main class="section">
-    <div class="container" style="max-width:640px">
-      <div class="card pillar">
-        <span class="tag">Thank you</span>
-        <h1>We have your enquiry.</h1>
-        <p style="margin:12px 0 18px">WhatsApp should have opened with your message for the owners. If it did not, use the button below. Our team will contact you shortly.</p>
-        <a class="btn btn-green" id="wa-again" href="https://wa.me/918095156211">Send on WhatsApp</a>
-        <a class="btn btn-ghost" href="/">Home</a>
-      </div>
-    </div>
-  </main>
+  </div></main>
   <script src="/js/main.js"></script>
-  <script>
-    const saved = sessionStorage.getItem("qusara_lead");
-    const btn = document.getElementById("wa-again");
-    if (saved && btn && typeof CONFIG !== "undefined") {
-      const data = JSON.parse(saved);
-      const text = [
-        "New website enquiry - Quasar Robotics Academy",
-        "Name: " + data.name,
-        "Phone: " + data.phone,
-        "Email: " + (data.email || "-"),
-        "Interest: " + data.interest,
-        "Message: " + (data.message || "-")
-      ].join("\n");
-      btn.href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(text);
-    }
-  </script>
 </body>
 </html>
