@@ -2637,8 +2637,26 @@ textarea::placeholder {
   align-items: stretch;
 }
 
+.mission-card,
+.value-grid > .card,
+.career-steps > .card {
+  padding: 18px 20px;
+}
+
 .mission-card {
   align-self: stretch;
+}
+
+.value-grid > .card p,
+.career-steps > .card p,
+.mission-card > p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.career-steps .tag {
+  margin-bottom: 8px;
 }
 
 .about-art {
