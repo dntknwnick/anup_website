@@ -4,7 +4,7 @@
 
 - Working branch: `academy-only-conversion` (created from the clean `master` worktree; `main` was not edited).
 - The brochure is the content source of truth. Full public name: **Quasar Robotics & Automation Academy**; compact name: **Quasar Academy**.
-- Visible website and email use `www.quasarrobotics.com` and `admissions@quasarrobotics.com`.
+- Visible website and email use `www.quasaracademy.in` and `admissions@quasaracademy.in`.
 - The existing canonical host `www.qusaraengg.com` is retained in metadata and sitemap pending owner confirmation; its spelling is an unresolved domain decision and is not to be presented as the academy's contact website.
 - Unconfirmed PLC brands, weekend options, dates, fees, schedules, certification bodies, employer names, and instructor biographies are excluded.
 - The brochure's exact placement claim is retained only as “100% Dedicated Placement Assistance”; it is not presented as a job guarantee.
