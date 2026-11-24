@@ -23,7 +23,7 @@
 | `privacy/index.html` | Rewrite | Academy enquiry privacy copy; remains subject to legal review. |
 | `thank-you/index.html` | Rewrite | Academy enquiry confirmation and admissions follow-up. |
 | `services/index.html`, `services.html` | Delete | Retired service-business page and legacy redirect stub; redirect rules cover the old URLs. |
-| `about.html`, `contact.html`, `privacy.html`, `thank-you.html`, `training.html` | Keep | Existing legacy route stubs; canonical route redirects remain. |
+| `about.html`, `contact.html`, `privacy.html`, `thank-you.html`, `training.html` | Delete | These legacy stubs conflict with the matching directory routes on Netlify; `.htaccess` and `_redirects` preserve their redirects. |
 | `send.php` | Rewrite | Preserve the mail mechanism and send academy enquiry fields to the admissions address from site config. |
 | `site-config.json` | Add | Single source for brand, canonical base, visible website/email, phone numbers, WhatsApp, address, and Maps URL. |
 | `js/main.js` | Rewrite | Load shared config, populate contact details and structured data, support enquiry/copy interactions, retain carousel and motion behavior. |
